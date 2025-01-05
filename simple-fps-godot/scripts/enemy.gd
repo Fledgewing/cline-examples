@@ -55,7 +55,14 @@ func _physics_process(_delta):
         velocity = Vector3.ZERO
             
     # Move enemy
-    move_and_slide()
+    var collision = move_and_collide(velocity * _delta)
+    if collision:
+        var collider = collision.get_collider()
+        if collider.is_in_group("player"):
+            # Find game manager and trigger game over
+            var game_manager = get_tree().get_first_node_in_group("game_manager")
+            if game_manager:
+                game_manager.end_game()
 
 func take_damage(amount: int):
     if is_dead:

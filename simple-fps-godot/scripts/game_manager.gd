@@ -8,10 +8,11 @@ extends Node
 var score: int = 0
 var spawn_points: Array
 var game_started: bool = false
+var game_over: bool = false
 
 @onready var score_label = $"../UI/Score"
 @onready var click_to_play = $"../UI/ClickToPlay"
-@onready var nav_region = $"../NavigationRegion3D"
+@onready var game_over_label = $"../UI/GameOver"
 
 func _ready():
     spawn_points = get_tree().get_nodes_in_group("spawn_point")
@@ -21,15 +22,22 @@ func _ready():
     if OS.has_feature("web"):
         Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
         click_to_play.visible = true
+        game_over_label.visible = false
     else:
         Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
         click_to_play.visible = false
+        game_over_label.visible = false
         start_game()
 
 func _input(event):
+    if game_over:
+        if event is InputEventKey and event.pressed:
+            restart_game()
+            return
+            
     if OS.has_feature("web"):
         if event is InputEventMouseButton and event.pressed:
-            if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
+            if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE and not game_over:
                 Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
                 click_to_play.visible = false
                 start_game()
@@ -39,18 +47,40 @@ func start_game():
         return
         
     game_started = true
+    game_over = false
     score = 0
     score_label.text = "Score: " + str(score)
-    
-    print_debug("Starting game...")
+    game_over_label.visible = false
     
     # Start spawning enemies
     spawn_enemy()
     spawn_enemy()  # Spawn two initially
     spawn_enemy()  # Spawn three initially
 
+func end_game():
+    game_over = true
+    game_started = false
+    Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+    game_over_label.text = "Game Over - an Enemy touched you.\nPress any key to restart."
+    game_over_label.visible = true
+    
+    # Clear existing enemies
+    for enemy in get_tree().get_nodes_in_group("enemy"):
+        enemy.queue_free()
+
+func restart_game():
+    # Reset game state
+    game_over = false
+    score = 0
+    score_label.text = "Score: " + str(score)
+    game_over_label.visible = false
+    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+    
+    # Start new game
+    start_game()
+
 func spawn_enemy():
-    if !game_started:
+    if !game_started or game_over:
         return
         
     var current_enemies = get_tree().get_nodes_in_group("enemy")
@@ -61,7 +91,7 @@ func spawn_enemy():
         var enemy = enemy_scene.instantiate()
         enemy.position = spawn_point.position
         enemy.position.y = 0  # Ensure enemy is on ground
-        nav_region.add_child(enemy)
+        add_sibling(enemy)
         print_debug("Enemy spawned at ", enemy.position)
         
     # Schedule next spawn
@@ -71,4 +101,3 @@ func spawn_enemy():
 func enemy_killed():
     score += points_per_kill
     score_label.text = "Score: " + str(score)
-    print_debug("Enemy killed, score: ", score)
