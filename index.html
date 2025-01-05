@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Tic Tac Toe</h1>
+        <div class="game-controls">
+            <div class="card">
+                <p>Select Difficulty:</p>
+                <div class="button-group">
+                    <button id="easyBtn" class="difficulty-btn active">Easy</button>
+                    <button id="hardBtn" class="difficulty-btn">Hard</button>
+                </div>
+            </div>
+            <div class="card">
+                <p>Start with a coin flip!</p>
+                <button id="flipBtn" class="primary-button">Flip Coin</button>
+                <p id="flipResult"></p>
+            </div>
+        </div>
+        <div class="status" id="status">Ready to play</div>
+        <div class="game-board" id="board">
+            <button class="cell" data-index="0"></button>
+            <button class="cell" data-index="1"></button>
+            <button class="cell" data-index="2"></button>
+            <button class="cell" data-index="3"></button>
+            <button class="cell" data-index="4"></button>
+            <button class="cell" data-index="5"></button>
+            <button class="cell" data-index="6"></button>
+            <button class="cell" data-index="7"></button>
+            <button class="cell" data-index="8"></button>
+        </div>
+        <button id="restartBtn" class="secondary-button">Restart Game</button>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

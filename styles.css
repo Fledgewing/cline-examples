@@ -1,0 +1,261 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #3730a3;
+    --secondary: #6b7280;
+    --secondary-dark: #4b5563;
+    --background: #f1f5f9;
+    --surface: #ffffff;
+    --text: #1e293b;
+    --text-light: #4b5563;
+    --danger: #dc2626;
+    --success: #16a34a;
+    --accent: #8b5cf6;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--background), #e0e7ff);
+    padding: 15px;
+    color: var(--text);
+}
+
+.container {
+    max-width: 600px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(45deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    letter-spacing: -1px;
+}
+
+.game-controls {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    margin-bottom: 1.5rem;
+}
+
+.status {
+    font-size: 1.2rem;
+    color: var(--text);
+    font-weight: 500;
+    transition: color 0.3s ease;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+    margin: 0.5rem 0;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 1.5rem auto;
+    max-width: 420px;
+    perspective: 1000px;
+}
+
+.cell {
+    aspect-ratio: 1;
+    background: var(--surface);
+    border: none;
+    border-radius: 12px;
+    font-size: 2.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1),
+               inset 0 2px 4px rgba(255,255,255,0.5);
+    transform-style: preserve-3d;
+    position: relative;
+}
+
+.cell:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -3px rgba(0,0,0,0.15), 0 4px 8px -4px rgba(0,0,0,0.1),
+               inset 0 2px 4px rgba(255,255,255,0.5);
+}
+
+.cell:active {
+    transform: translateY(0);
+}
+
+.cell.x {
+    color: var(--primary);
+}
+
+.cell.o {
+    color: var(--danger);
+}
+
+.cell.x, .cell.o {
+    animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.5) rotate(-15deg);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1) rotate(0);
+        opacity: 1;
+    }
+}
+
+.card {
+    background: var(--surface);
+    padding: 1.25rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1),
+               inset 0 2px 4px rgba(255,255,255,0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.8);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -3px rgba(0,0,0,0.15), 0 4px 8px -4px rgba(0,0,0,0.1),
+               inset 0 2px 4px rgba(255,255,255,0.5);
+}
+
+.card p {
+    margin-bottom: 0.75rem;
+    color: var(--text);
+    font-weight: 500;
+    font-size: 1rem;
+}
+
+button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.primary-button {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    color: white;
+    box-shadow: 0 4px 6px rgba(79, 70, 229, 0.3);
+    width: 100%;
+}
+
+.primary-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(79, 70, 229, 0.4);
+}
+
+.primary-button:active {
+    transform: translateY(0);
+}
+
+.secondary-button {
+    background: var(--secondary);
+    color: white;
+    box-shadow: 0 4px 6px rgba(75, 85, 99, 0.2);
+    margin-top: 0.5rem;
+}
+
+.secondary-button:hover {
+    background: var(--secondary-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(75, 85, 99, 0.3);
+}
+
+button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.button-group {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+}
+
+.difficulty-btn {
+    background: var(--secondary);
+    color: white;
+    flex: 1;
+    box-shadow: 0 4px 6px rgba(75, 85, 99, 0.2);
+}
+
+.difficulty-btn.active {
+    background: linear-gradient(135deg, var(--success), #15803d);
+    box-shadow: 0 4px 6px rgba(22, 163, 74, 0.3);
+}
+
+#flipResult {
+    margin-top: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    animation: fadeIn 0.3s ease;
+    min-height: 1.5rem;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+    .game-controls {
+        grid-template-columns: 1fr;
+    }
+
+    .game-board {
+        max-width: 300px;
+        gap: 8px;
+    }
+
+    .cell {
+        font-size: 2.25rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .card {
+        padding: 1rem;
+    }
+
+    button {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.85rem;
+    }
+}
