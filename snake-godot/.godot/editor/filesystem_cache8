@@ -1,12 +1,13 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1736094780
+::res://::1736095351
 export_presets.cfg::TextFile::-1::1736094795::0::1::::<><>::
 icon.svg::CompressedTexture2D::497694280458313651::1736094639::1736094720::1::::<><>::
+PRD.txt::TextFile::-1::1736094193::0::1::::<><>::
 ::res://exports/::1736094780
-::res://exports/web/::1736094993
-index.apple-touch-icon.png::CompressedTexture2D::4275158844156032222::1736094993::1736095027::1::::<><>::
-index.icon.png::CompressedTexture2D::7236722338737631812::1736094993::1736095027::1::::<><>::
-index.png::CompressedTexture2D::8947154092806735123::1736094993::1736095028::1::::<><>::
+::res://exports/web/::1736095029
+index.apple-touch-icon.png::CompressedTexture2D::4275158844156032222::1736095029::1736096054::1::::<><>::
+index.icon.png::CompressedTexture2D::7236722338737631812::1736095029::1736096054::1::::<><>::
+index.png::CompressedTexture2D::8947154092806735123::1736095029::1736096054::1::::<><>::
 ::res://scenes/::1736094415
 berry.tscn::PackedScene::4597346028858574989::1736094420::0::1::::<><>::res://scripts/berry.gd
 main.tscn::PackedScene::4443163607983772729::1736095018::0::1::::<><>::res://scripts/main.gd<>res://scripts/snake.gd<>res://scripts/berry.gd
@@ -14,5 +15,5 @@ snake.tscn::PackedScene::7133022889227713129::1736094413::0::1::::<><>::res://sc
 ::res://scripts/::1736094379
 berry.gd::GDScript::-1::1736094376::0::1::::<>Node2D<>::
 logger.gd::GDScript::-1::1736094586::0::1::::<>Node<>::
-main.gd::GDScript::-1::1736095006::0::1::::<>Node2D<>::
-snake.gd::GDScript::-1::1736094654::0::1::::<>Node2D<>::
+main.gd::GDScript::-1::1736095902::0::1::::<>Node2D<>::
+snake.gd::GDScript::-1::1736095892::0::1::::<>Node2D<>::
