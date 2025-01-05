@@ -9,6 +9,10 @@ var timer = 0.0
 var grid_size = 20  # pixels per grid cell
 var next_direction = Vector2(1, 0)  # Buffer for next direction change
 
+# Touch controls
+var touch_start_position = null
+var min_swipe_distance = 30  # Minimum distance for a swipe to register
+
 func _ready() -> void:
 	# Initialize snake with 3 segments
 	segments = [
@@ -25,6 +29,7 @@ func _process(delta: float) -> void:
 		move()
 
 func _input(event: InputEvent) -> void:
+	# Handle keyboard input
 	if event.is_action_pressed("move_up") and direction.y != 1:
 		next_direction = Vector2(0, -1)
 	elif event.is_action_pressed("move_down") and direction.y != -1:
@@ -33,6 +38,32 @@ func _input(event: InputEvent) -> void:
 		next_direction = Vector2(-1, 0)
 	elif event.is_action_pressed("move_right") and direction.x != -1:
 		next_direction = Vector2(1, 0)
+	
+	# Handle touch input
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			# Touch started
+			touch_start_position = event.position
+		elif touch_start_position != null:
+			# Touch ended, calculate swipe
+			var swipe = event.position - touch_start_position
+			if swipe.length() >= min_swipe_distance:
+				# Determine primary direction of swipe
+				var abs_x = abs(swipe.x)
+				var abs_y = abs(swipe.y)
+				if abs_x > abs_y:
+					# Horizontal swipe
+					if swipe.x > 0 and direction.x != -1:
+						next_direction = Vector2(1, 0)  # Right
+					elif swipe.x < 0 and direction.x != 1:
+						next_direction = Vector2(-1, 0)  # Left
+				else:
+					# Vertical swipe
+					if swipe.y > 0 and direction.y != -1:
+						next_direction = Vector2(0, 1)  # Down
+					elif swipe.y < 0 and direction.y != 1:
+						next_direction = Vector2(0, -1)  # Up
+			touch_start_position = null
 
 func move() -> void:
 	if !get_parent().game_active:
