@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkers Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-info">
+            <div class="current-player">Current Player: <span id="current-player">Red</span></div>
+            <div class="difficulty">
+                <label for="ai-difficulty">AI Difficulty:</label>
+                <select id="ai-difficulty">
+                    <option value="easy">Easy</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+            <button id="reset-game">Reset Game</button>
+        </div>
+        <div id="board" class="board"></div>
+        <div id="game-message" class="game-message"></div>
+    </div>
+    <script src="js/GameBoard.js"></script>
+    <script src="js/MoveValidator.js"></script>
+    <script src="js/CheckersAI.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
