@@ -24,9 +24,11 @@ func _ready() -> void:
 	Logger.log_info("Game initialized")
 
 func _input(event: InputEvent) -> void:
-	if !game_active and event is InputEventKey and event.pressed and !event.echo:
-		restart_game()
-		get_viewport().set_input_as_handled()
+	if !game_active:
+		if (event is InputEventKey and event.pressed and !event.echo) or \
+		   (event is InputEventScreenTouch and event.pressed):
+			restart_game()
+			get_viewport().set_input_as_handled()
 
 func _on_berry_collected() -> void:
 	score += 10

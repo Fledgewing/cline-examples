@@ -11,7 +11,8 @@ var next_direction = Vector2(1, 0)  # Buffer for next direction change
 
 # Touch controls
 var touch_start_position = null
-var min_swipe_distance = 30  # Minimum distance for a swipe to register
+var min_swipe_distance = 20  # Minimum distance for a swipe to register
+var current_swipe = Vector2.ZERO
 
 func _ready() -> void:
 	# Initialize snake with 3 segments
@@ -39,31 +40,34 @@ func _input(event: InputEvent) -> void:
 	elif event.is_action_pressed("move_right") and direction.x != -1:
 		next_direction = Vector2(1, 0)
 	
-	# Handle touch input
+	# Handle touch/drag input
 	if event is InputEventScreenTouch:
 		if event.pressed:
-			# Touch started
 			touch_start_position = event.position
-		elif touch_start_position != null:
-			# Touch ended, calculate swipe
-			var swipe = event.position - touch_start_position
-			if swipe.length() >= min_swipe_distance:
+			current_swipe = Vector2.ZERO
+		else:
+			touch_start_position = null
+	elif event is InputEventScreenDrag:
+		if touch_start_position != null:
+			current_swipe = event.position - touch_start_position
+			if current_swipe.length() >= min_swipe_distance:
 				# Determine primary direction of swipe
-				var abs_x = abs(swipe.x)
-				var abs_y = abs(swipe.y)
+				var abs_x = abs(current_swipe.x)
+				var abs_y = abs(current_swipe.y)
 				if abs_x > abs_y:
 					# Horizontal swipe
-					if swipe.x > 0 and direction.x != -1:
+					if current_swipe.x > 0 and direction.x != -1:
 						next_direction = Vector2(1, 0)  # Right
-					elif swipe.x < 0 and direction.x != 1:
+					elif current_swipe.x < 0 and direction.x != 1:
 						next_direction = Vector2(-1, 0)  # Left
 				else:
 					# Vertical swipe
-					if swipe.y > 0 and direction.y != -1:
+					if current_swipe.y > 0 and direction.y != -1:
 						next_direction = Vector2(0, 1)  # Down
-					elif swipe.y < 0 and direction.y != 1:
+					elif current_swipe.y < 0 and direction.y != 1:
 						next_direction = Vector2(0, -1)  # Up
-			touch_start_position = null
+				touch_start_position = event.position
+				current_swipe = Vector2.ZERO
 
 func move() -> void:
 	if !get_parent().game_active:
