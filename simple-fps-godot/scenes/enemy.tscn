@@ -27,14 +27,3 @@ shape = SubResource("CapsuleShape3D_1")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
 mesh = SubResource("CapsuleMesh_1")
 surface_material_override/0 = SubResource("StandardMaterial3D_1")
-
-[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
-path_desired_distance = 0.5
-target_desired_distance = 2.0
-path_max_distance = 50.0
-avoidance_enabled = true
-radius = 0.4
-neighbor_distance = 5.0
-max_speed = 3.0
-debug_enabled = true
-debug_path_custom_color = Color(1, 0, 0, 1)

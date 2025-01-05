@@ -23,7 +23,7 @@ albedo_color = Color(0.4, 0.4, 0.4, 1.0)
 
 [node name="Main" type="Node3D"]
 
-[node name="GameManager" type="Node" parent="."]
+[node name="GameManager" type="Node" parent="." groups=["game_manager"]]
 script = ExtResource("2_k3m4p")
 enemy_scene = ExtResource("3_l5n6p")
 max_enemies = 4

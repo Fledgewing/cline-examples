@@ -12,7 +12,6 @@ var is_dead: bool = false
 var can_attack: bool = true
 
 @onready var visual = $Visual
-@onready var nav_agent = $NavigationAgent3D
 
 func _ready():
     # Add to enemy group
@@ -22,9 +21,10 @@ func _ready():
     await get_tree().create_timer(0.1).timeout
     player = get_tree().get_nodes_in_group("player")[0]
     
-    # Setup material
-    var material = visual.get_surface_override_material(0)
+    # Setup initial green color
+    var material = StandardMaterial3D.new()
     material.albedo_color = Color(0.2, 0.8, 0.2)  # Start green
+    visual.set_surface_override_material(0, material)
     
     print_debug("Enemy spawned and initialized at ", position)
 
@@ -94,8 +94,12 @@ func die():
     is_dead = true
     print_debug("Enemy died")
     
-    # Emit signal for score or other game mechanics
-    if has_node("../GameManager"):
-        get_node("../GameManager").enemy_killed()
+    # Find game manager in the scene tree
+    var game_manager = get_tree().get_first_node_in_group("game_manager")
+    if game_manager:
+        game_manager.enemy_killed()
+        print_debug("Score updated")
+    else:
+        print_debug("Game manager not found")
     
     queue_free()
