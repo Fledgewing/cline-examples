@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .menu {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .menu-links a {
+            padding: 1rem 2rem;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        .menu-links a:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="menu">
+        <h1>Game Menu</h1>
+        <div class="menu-links">
+            <a href="tic-tac-toe/index.html">Tic Tac Toe</a>
+            <a href="snake-godot/exports/web/index.html">Snake Game</a>
+        </div>
+    </div>
+</body>
+</html>
