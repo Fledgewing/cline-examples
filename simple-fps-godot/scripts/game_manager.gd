@@ -1,8 +1,8 @@
 extends Node
 
 @export var enemy_scene: PackedScene
-@export var max_enemies: int = 4
-@export var spawn_interval: float = 2.0
+@export var max_enemies: int = 5
+@export var spawn_interval: float = 1.8
 @export var points_per_kill: int = 10
 
 var score: int = 0
@@ -13,6 +13,7 @@ var game_over: bool = false
 @onready var score_label = $"../UI/Score"
 @onready var click_to_play = $"../UI/ClickToPlay"
 @onready var game_over_label = $"../UI/GameOver"
+@onready var weapon = $"../Player/Head/Camera3D/Weapon"
 
 func _ready():
     spawn_points = get_tree().get_nodes_in_group("spawn_point")
@@ -31,13 +32,13 @@ func _ready():
 
 func _input(event):
     if game_over:
-        if event is InputEventKey and event.pressed:
+        if event is InputEventKey and event.pressed and event.keycode == KEY_ENTER:
             restart_game()
             return
             
-    if OS.has_feature("web"):
+    if OS.has_feature("web") and not game_over:
         if event is InputEventMouseButton and event.pressed:
-            if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE and not game_over:
+            if Input.mouse_mode == Input.MOUSE_MODE_VISIBLE:
                 Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
                 click_to_play.visible = false
                 start_game()
@@ -61,7 +62,7 @@ func end_game():
     game_over = true
     game_started = false
     Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
-    game_over_label.text = "Game Over - an Enemy touched you.\nPress any key to restart."
+    game_over_label.text = "Game Over - an Enemy touched you.\nPress Enter to restart."
     game_over_label.visible = true
     
     # Clear existing enemies
@@ -75,6 +76,13 @@ func restart_game():
     score_label.text = "Score: " + str(score)
     game_over_label.visible = false
     Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+    
+    # Replenish ammo and reset weapon state
+    if weapon:
+        weapon.current_ammo = weapon.ammo_capacity
+        weapon.is_reloading = false
+        weapon.can_fire = true
+        weapon.update_ammo_display()
     
     # Start new game
     start_game()
