@@ -3,7 +3,7 @@ extends Node3D
 class_name Weapon
 
 @export var damage: int = 10
-@export var ammo_capacity: int = 30
+@export var ammo_capacity: int = 9
 @export var reload_time: float = 1.5
 @export var fire_rate: float = 0.1
 
