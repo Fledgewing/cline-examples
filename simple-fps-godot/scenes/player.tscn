@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3 uid="uid://b4e1cplvxc0"]
+
+[ext_resource type="Script" path="res://scripts/player.gd" id="1_2p4u3"]
+[ext_resource type="Script" path="res://scripts/weapon.gd" id="2_3k8m2"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_1"]
+radius = 0.4
+height = 1.8
+
+[node name="Player" type="CharacterBody3D" groups=["player"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+script = ExtResource("1_2p4u3")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_1")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+
+[node name="RayCast3D" type="RayCast3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+enabled = true
+target_position = Vector3(0, 0, -100)
+collision_mask = 2
+debug_shape_custom_color = Color(1, 0, 0, 1)
+debug_shape_thickness = 5
+debug_shape_enabled = true
+
+[node name="Weapon" type="Node3D" parent="Head/Camera3D"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, -0.25, -0.5)
+script = ExtResource("2_3k8m2")
+
+[node name="WeaponUI" type="Control" parent="Head/Camera3D/Weapon"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="AmmoLabel" type="Label" parent="Head/Camera3D/Weapon/WeaponUI"]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 66.0
+theme_override_font_sizes/font_size = 32
+text = "30"

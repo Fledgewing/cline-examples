@@ -1,0 +1,178 @@
+[gd_scene load_steps=7 format=3 uid="uid://b8x85uqt0vr6m"]
+
+[ext_resource type="PackedScene" uid="uid://b4e1cplvxc0" path="res://scenes/player.tscn" id="1_n4m2p"]
+[ext_resource type="Script" path="res://scripts/game_manager.gd" id="2_k3m4p"]
+[ext_resource type="PackedScene" uid="uid://c8b4pxqx6h0vx" path="res://scenes/enemy.tscn" id="3_l5n6p"]
+
+[sub_resource type="NavigationMesh" id="NavigationMesh_1"]
+agent_height = 1.8
+agent_radius = 0.4
+agent_max_climb = 0.5
+agent_max_slope = 45.0
+region_min_size = 1.0
+edge_max_length = 1.0
+filter_baking_astar_max_distance = 1.0
+filter_ledge_spans = true
+filter_walkable_low_height_spans = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(0.3, 0.3, 0.3, 1.0)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2"]
+albedo_color = Color(0.4, 0.4, 0.4, 1.0)
+
+[node name="Main" type="Node3D"]
+
+[node name="GameManager" type="Node" parent="."]
+script = ExtResource("2_k3m4p")
+enemy_scene = ExtResource("3_l5n6p")
+max_enemies = 4
+spawn_interval = 2.0
+points_per_kill = 10
+
+[node name="NavigationRegion3D" type="NavigationRegion3D" parent="."]
+navigation_mesh = SubResource("NavigationMesh_1")
+navigation_layers = 3
+avoidance_enabled = true
+debug_enabled = true
+
+[node name="Level" type="Node3D" parent="NavigationRegion3D" groups=["navigation_mesh_source_group"]]
+
+[node name="Floor" type="CSGBox3D" parent="NavigationRegion3D/Level"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
+use_collision = true
+collision_layer = 1
+collision_mask = 3
+size = Vector3(50, 0.2, 50)
+material = SubResource("StandardMaterial3D_1")
+
+[node name="Walls" type="Node3D" parent="NavigationRegion3D/Level"]
+
+[node name="Wall1" type="CSGBox3D" parent="NavigationRegion3D/Level/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 25)
+use_collision = true
+collision_layer = 1
+collision_mask = 3
+size = Vector3(50, 4, 0.5)
+material = SubResource("StandardMaterial3D_2")
+
+[node name="Wall2" type="CSGBox3D" parent="NavigationRegion3D/Level/Walls"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -25)
+use_collision = true
+collision_layer = 1
+collision_mask = 3
+size = Vector3(50, 4, 0.5)
+material = SubResource("StandardMaterial3D_2")
+
+[node name="Wall3" type="CSGBox3D" parent="NavigationRegion3D/Level/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, 25, 2, 0)
+use_collision = true
+collision_layer = 1
+collision_mask = 3
+size = Vector3(50, 4, 0.5)
+material = SubResource("StandardMaterial3D_2")
+
+[node name="Wall4" type="CSGBox3D" parent="NavigationRegion3D/Level/Walls"]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -25, 2, 0)
+use_collision = true
+collision_layer = 1
+collision_mask = 3
+size = Vector3(50, 4, 0.5)
+material = SubResource("StandardMaterial3D_2")
+
+[node name="Obstacles" type="Node3D" parent="NavigationRegion3D/Level"]
+
+[node name="Obstacle1" type="CSGBox3D" parent="NavigationRegion3D/Level/Obstacles"]
+transform = Transform3D(0.866025, 0, 0.5, 0, 1, 0, -0.5, 0, 0.866025, -5, 2, -5)
+use_collision = true
+collision_layer = 1
+collision_mask = 3
+size = Vector3(8, 4, 0.5)
+material = SubResource("StandardMaterial3D_2")
+
+[node name="Obstacle2" type="CSGBox3D" parent="NavigationRegion3D/Level/Obstacles"]
+transform = Transform3D(0.866025, 0, -0.5, 0, 1, 0, 0.5, 0, 0.866025, 5, 2, 5)
+use_collision = true
+collision_layer = 1
+collision_mask = 3
+size = Vector3(8, 4, 0.5)
+material = SubResource("StandardMaterial3D_2")
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="Spawn1" type="Node3D" parent="SpawnPoints" groups=["spawn_point"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.1, -20)
+
+[node name="Spawn2" type="Node3D" parent="SpawnPoints" groups=["spawn_point"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.1, -20)
+
+[node name="Spawn3" type="Node3D" parent="SpawnPoints" groups=["spawn_point"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0.1, 20)
+
+[node name="Spawn4" type="Node3D" parent="SpawnPoints" groups=["spawn_point"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0.1, 20)
+
+[node name="Player" parent="." instance=ExtResource("1_n4m2p")]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 10, 0)
+shadow_enabled = true
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Score" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200
+offset_top = 20
+offset_right = -20
+offset_bottom = 66
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 32
+text = "Score: 0"
+horizontal_alignment = 2
+
+[node name="Reticle" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -13.0
+offset_right = 20.0
+offset_bottom = 13.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ClickToPlay" type="Label" parent="UI"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200
+offset_top = -25
+offset_right = 200
+offset_bottom = 25
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 48
+text = "Click to Play"
+horizontal_alignment = 1
+vertical_alignment = 1

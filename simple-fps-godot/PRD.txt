@@ -1,0 +1,296 @@
+I'll create a detailed PRD for a browser-based 3D FPS game using Godot. Let's break this down into comprehensive phases.
+
+# Project Requirements Document: Basic 3D FPS Game
+
+## Project Overview
+A web-browser compatible 3D First Person Shooter built in Godot 4.x, focusing on core FPS mechanics.
+
+## Ultimate Goals
+- Create an engaging, responsive FPS experience that runs smoothly in web browsers
+- Deliver core FPS mechanics with minimal lag
+- Provide satisfying combat and movement mechanics
+
+## Technical Requirements
+- Godot 4.x
+- WebGL 2.0 support
+- Target framerate: 60 FPS minimum
+- Maximum file size: 50MB (for quick browser loading)
+
+## Phase 1: Core Movement System
+### 1.1 Player Controller Setup
+```gdscript
+extends CharacterBody3D
+
+@export var SPEED = 5.0
+@export var JUMP_VELOCITY = 4.5
+@export var MOUSE_SENSITIVITY = 0.003
+
+var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
+@onready var head = $Head
+@onready var camera = $Head/Camera3D
+
+func _ready():
+    Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+    
+    # Add logging
+    print_debug("Player controller initialized")
+
+func _unhandled_input(event):
+    if event is InputEventMouseMotion:
+        rotate_y(-event.relative.x * MOUSE_SENSITIVITY)
+        head.rotate_x(-event.relative.y * MOUSE_SENSITIVITY)
+        head.rotation.x = clamp(head.rotation.x, -PI/2, PI/2)
+
+func _physics_process(delta):
+    # Add gravity
+    if not is_on_floor():
+        velocity.y -= gravity * delta
+
+    # Handle Jump
+    if Input.is_action_just_pressed("jump") and is_on_floor():
+        velocity.y = JUMP_VELOCITY
+        print_debug("Jump executed")
+
+    # Get movement input
+    var input_dir = Input.get_vector("move_left", "move_right", "move_forward", "move_back")
+    var direction = (transform.basis * Vector3(input_dir.x, 0, input_dir.y)).normalized()
+    
+    if direction:
+        velocity.x = direction.x * SPEED
+        velocity.z = direction.z * SPEED
+    else:
+        velocity.x = move_toward(velocity.x, 0, SPEED)
+        velocity.z = move_toward(velocity.z, 0, SPEED)
+
+    move_and_slide()
+```
+
+### 1.2 Input Map Configuration
+```
+Required Actions:
+- move_forward (W)
+- move_back (S)
+- move_left (A)
+- move_right (D)
+- jump (Space)
+- shoot (Left Mouse Button)
+- reload (R)
+```
+
+## Phase 2: Weapon System
+### 2.1 Basic Weapon Class
+```gdscript
+extends Node3D
+
+class_name Weapon
+
+@export var damage: int = 10
+@export var ammo_capacity: int = 30
+@export var reload_time: float = 1.5
+@export var fire_rate: float = 0.1
+
+var current_ammo: int
+var can_fire: bool = true
+var is_reloading: bool = false
+
+@onready var ray_cast = $RayCast3D
+@onready var animation_player = $AnimationPlayer
+@onready var audio_player = $AudioStreamPlayer3D
+
+func _ready():
+    current_ammo = ammo_capacity
+    print_debug("Weapon initialized with ", ammo_capacity, " ammo")
+
+func shoot():
+    if !can_fire or is_reloading or current_ammo <= 0:
+        print_debug("Cannot fire: ", 
+            "can_fire=", can_fire, 
+            "is_reloading=", is_reloading, 
+            "current_ammo=", current_ammo)
+        return
+
+    current_ammo -= 1
+    can_fire = false
+    
+    if ray_cast.is_colliding():
+        var target = ray_cast.get_collider()
+        if target.has_method("take_damage"):
+            target.take_damage(damage)
+            print_debug("Hit target: ", target.name)
+    
+    # Play effects
+    animation_player.play("shoot")
+    audio_player.play()
+    
+    # Reset fire rate
+    await get_tree().create_timer(fire_rate).timeout
+    can_fire = true
+```
+
+## Phase 3: Enemy System
+### 3.1 Basic Enemy AI
+```gdscript
+extends CharacterBody3D
+
+@export var health: int = 100
+@export var movement_speed: float = 3.0
+@export var detection_range: float = 20.0
+
+var player: Node3D
+var nav: NavigationAgent3D
+var is_dead: bool = false
+
+func _ready():
+    nav = $NavigationAgent3D
+    # Get player reference
+    player = get_tree().get_nodes_in_group("player")[0]
+    print_debug("Enemy initialized, tracking player: ", player.name)
+
+func _physics_process(delta):
+    if is_dead:
+        return
+        
+    if player and global_position.distance_to(player.global_position) < detection_range:
+        # Update path to player
+        nav.set_target_position(player.global_position)
+        
+        var next_position = nav.get_next_position()
+        var direction = (next_position - global_position).normalized()
+        
+        velocity = direction * movement_speed
+        move_and_slide()
+
+func take_damage(amount: int):
+    if is_dead:
+        return
+        
+    health -= amount
+    print_debug("Enemy took damage: ", amount, " health remaining: ", health)
+    
+    if health <= 0:
+        die()
+
+func die():
+    is_dead = true
+    print_debug("Enemy died")
+    # Play death animation
+    # Spawn particles
+    queue_free()
+```
+
+## Phase 4: Game Management
+### 4.1 Game Manager
+```gdscript
+extends Node
+
+signal game_started
+signal game_over
+signal score_updated(new_score: int)
+
+var current_score: int = 0
+var game_active: bool = false
+
+func _ready():
+    print_debug("Game Manager initialized")
+
+func start_game():
+    game_active = true
+    current_score = 0
+    emit_signal("game_started")
+    print_debug("Game started")
+
+func end_game():
+    game_active = false
+    emit_signal("game_over")
+    print_debug("Game over. Final score: ", current_score)
+
+func add_score(points: int):
+    if !game_active:
+        return
+    
+    current_score += points
+    emit_signal("score_updated", current_score)
+    print_debug("Score updated: ", current_score)
+```
+
+## Edge Cases & Error Handling
+
+1. Browser-Specific Issues
+```gdscript
+func _ready():
+    # Check for WebGL support
+    if OS.has_feature("JavaScript"):
+        if !OS.has_feature("WebGL2"):
+            push_error("WebGL 2 not supported in this browser")
+            # Show user-friendly error message
+```
+
+2. Performance Monitoring
+```gdscript
+func _process(delta):
+    if Engine.get_frames_per_second() < 30:
+        print_debug("Performance warning: Low FPS detected")
+        # Implement performance optimization measures
+```
+
+3. Input Handling
+```gdscript
+func _input(event):
+    if event is InputEventKey:
+        if event.pressed and event.keycode == KEY_ESCAPE:
+            handle_pause()
+        
+    # Handle lost focus in browser
+    if OS.has_feature("JavaScript"):
+        if event is InputEventMouseButton:
+            if Input.mouse_mode != Input.MOUSE_MODE_CAPTURED:
+                Input.mouse_mode = Input.MOUSE_MODE_CAPTURED
+```
+
+## Testing Scenarios
+1. Movement Testing
+- Test player movement in all directions
+- Verify collision handling
+- Check jump mechanics
+- Test movement on different surfaces
+
+2. Combat Testing
+- Verify weapon accuracy
+- Test damage calculations
+- Check enemy reactions
+- Verify hit detection
+
+3. Performance Testing
+- Monitor FPS in different browsers
+- Test with multiple enemies
+- Check memory usage
+- Verify asset loading times
+
+## Implementation Phases
+1. Core Setup (2 days)
+- Project initialization
+- Basic player controller
+- Camera setup
+
+2. Movement System (3 days)
+- Player movement
+- Jump mechanics
+- Collision handling
+
+3. Combat System (4 days)
+- Weapon implementation
+- Shooting mechanics
+- Hit detection
+- Damage system
+
+4. Enemy System (3 days)
+- Basic AI
+- Pathfinding
+- Enemy spawning
+- Combat interaction
+
+5. Polish & Optimization (3 days)
+- Performance optimization
+- Browser compatibility
+- Bug fixing
+- Final testing
