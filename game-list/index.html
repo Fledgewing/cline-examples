@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Chain Game</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>Word Chain Game</h1>
+        
+        <div class="players-container">
+            <div class="player player-1">
+                <h2>Player 1</h2>
+                <div class="word-display">
+                    <div class="first-word"></div>
+                    <div class="second-word"></div>
+                </div>
+                <div class="chain-display">
+                    <h3>Word Chain</h3>
+                    <div class="chain"></div>
+                </div>
+                <div class="guess-input">
+                    <input type="text" id="player1-guess" placeholder="Enter your guess..." disabled>
+                    <button onclick="makeGuess('player1')" disabled>Guess</button>
+                </div>
+                <div class="score">
+                    Score: <span id="player1-score">0</span>
+                    <div class="progress">Words: <span id="player1-progress">0</span>/5</div>
+                </div>
+            </div>
+            
+            <div class="player player-2">
+                <h2>Player 2</h2>
+                <div class="word-display">
+                    <div class="first-word"></div>
+                    <div class="second-word"></div>
+                </div>
+                <div class="chain-display">
+                    <h3>Word Chain</h3>
+                    <div class="chain"></div>
+                </div>
+                <div class="guess-input">
+                    <input type="text" id="player2-guess" placeholder="Enter your guess..." disabled>
+                    <button onclick="makeGuess('player2')" disabled>Guess</button>
+                </div>
+                <div class="score">
+                    Score: <span id="player2-score">0</span>
+                    <div class="progress">Words: <span id="player2-progress">0</span>/5</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="game-controls">
+            <button onclick="startNewGame()">New Game</button>
+        </div>
+
+        <div id="message" class="message"></div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>
